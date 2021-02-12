@@ -1,9 +1,8 @@
 #ifndef Scheduler_h
 #define Scheduler_h
-#include "WConstants.h"
-#include "Arduino.h"
 #include <avr/interrupt.h>
 #include <setjmp.h>
+#include <Arduino.h>
 struct thread {
   jmp_buf env;
   struct thread * next;
@@ -14,29 +13,21 @@ struct thread {
   */
   volatile int flag;
   void (*call)(); //thread body
-  volatile unsigned long delay_time; //time till next wakeup in microseconds
+  volatile unsigned long delayTime; //time till next wakeup in microseconds
   volatile uint16_t stack; //stack pointer
-  size_t stack_size;
+  size_t stackSize;
   int id;
 };
 
-class Scheduler
-{
-  public:
-    Scheduler();
-    void link_thread(void(*func)(), size_t stack_size, int id);
-    void run_sched();
-    void pause()
-  private:
-    void run_thread();
-    struct thread * curr = NULL;
-    jmp_buf kernel;
-};
 
+void linkThread(void(*func)(), size_t stackSize, int id);
+void runThreads();
+void pause(unsigned long delayAmmount);
+void runScheduler();
+void loop(); //defines loop for the user
+void setupInterrupt();
 
 //never blocks interrupts so no need to do explicitly do reti?
-ISR(TIMER1_COMPA_vect,ISR_NOBLOCK) {
-  //relinquish control to supervisor
-  pause(1);
-}
+//this is probably bad but I can't find any direct reason why
+//ISR(TIMER1_COMPA_vect,ISR_NOBLOCK);
 #endif

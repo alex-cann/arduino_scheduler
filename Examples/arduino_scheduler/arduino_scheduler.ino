@@ -1,3 +1,5 @@
+//an example illustrating how the scheduler would work if it isn't a library
+//functions are generally the same as those in the library
 #include <LiquidCrystal.h>
 #include <setjmp.h>
 #include <dht.h>
@@ -27,7 +29,6 @@ struct thread {
 
 struct thread * curr = NULL;
 jmp_buf kernel;
-
 
 void link_thread(void(*func)(), size_t stack_size, int id) {
 
@@ -128,7 +129,7 @@ void buzzer_func() {
   }
 }
 
-//wrapper to prevent loop from getting interrupted
+//wrapper to prevent scheduler from pausing itself incase of weirdness
 void run(){
   sei();
   curr->call();
