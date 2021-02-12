@@ -1,0 +1,3 @@
+setupInterrupt	KEYWORD2
+linkThread	KEYWORD2
+pause	KEYWORD2
